@@ -28,7 +28,7 @@ if not os.environ.get('SECRET_KEY'):  # Kiểm tra xem khóa bí mật có tồn
 
 app = Flask(__name__)  # Khởi tạo ứng dụng Flask
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')  # Cấu hình khóa bí mật
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dangnhap.db'  # Cấu hình kết nối đến cơ sở dữ liệu
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tranquytai:tranquytai@db/doanpython'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Không theo dõi thay đổi trên cơ sở dữ liệu
 migrate = Migrate(app, db)  # Khởi tạo migrate với ứng dụng và cơ sở dữ liệu
 db.init_app(app)  # Khởi tạo cơ sở dữ liệu với ứng dụng Flask
