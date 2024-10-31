@@ -161,14 +161,21 @@ def login():
 @login_required
 def dashboard():
     # Truy vấn dữ liệu chi tiêu từ cơ sở dữ liệu
-    expenses = db.session.query(Transaction.category, db.func.sum(Transaction.amount)).filter_by(user_id=current_user.id, type='expense').group_by(Transaction.category).all()
+    expenses = db.session.query(Transaction.category, db.func.sum(Transaction.amount)).filter_by(user_id=current_user.id, type='Chi Tiêu').group_by(Transaction.category).all()
     expense_data = {category: amount for category, amount in expenses}
     
     # Truy vấn dữ liệu thu nhập từ cơ sở dữ liệu
-    incomes = db.session.query(Transaction.category, db.func.sum(Transaction.amount)).filter_by(user_id=current_user.id, type='income').group_by(Transaction.category).all()
+    incomes = db.session.query(Transaction.category, db.func.sum(Transaction.amount)).filter_by(user_id=current_user.id, type='Thu Nhập').group_by(Transaction.category).all()
     income_data = {category: amount for category, amount in incomes}
     
-    return render_template('dashboard.html', expense_data=expense_data, income_data=income_data)
+    # Lấy giao dịch gần đây
+    recent_transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.date.desc()).limit(5).all()
+    
+    # Tính tổng thu nhập và chi tiêu
+    total_income = sum(amount for category, amount in incomes)
+    total_expense = sum(amount for category, amount in expenses)
+    
+    return render_template('dashboard.html', expense_data=expense_data, income_data=income_data, recent_transactions=recent_transactions, total_income=total_income, total_expense=total_expense)
 
 
 @app.route('/logout')  # Route đăng xuất
