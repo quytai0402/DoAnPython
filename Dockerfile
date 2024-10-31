@@ -1,24 +1,22 @@
 # Sử dụng hình ảnh Python chính thức
 FROM python:3.10-slim
 
-# Đặt thư mục làm việc trong container
+# Đặt biến môi trường
+ENV PYTHONUNBUFFERED 1
+
+# Tạo thư mục làm việc
 WORKDIR /app
 
-# Cài đặt các thư viện phát triển PostgreSQL
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gcc
-
-# Sao chép các tệp yêu cầu vào container
-COPY requirements.txt requirements.txt
+# Sao chép tệp yêu cầu vào thư mục làm việc
+COPY requirements.txt /app/
 
 # Cài đặt các gói yêu cầu
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Sao chép toàn bộ mã nguồn vào container
-COPY . .
+# Sao chép toàn bộ mã nguồn vào thư mục làm việc
+COPY . /app/
 
-# Thiết lập biến môi trường
+# Thiết lập biến môi trường cho Flask
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
@@ -26,4 +24,4 @@ ENV FLASK_RUN_HOST=0.0.0.0
 EXPOSE 5000
 
 # Chạy ứng dụng Flask
-CMD ["python", "app.py"]
+CMD ["flask", "run", "--host=0.0.0.0"]
